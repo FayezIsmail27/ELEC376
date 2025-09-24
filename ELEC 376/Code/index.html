@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Logic Lab</title>
+  <link rel="icon" type="image/x-icon" href="assets/logo.png">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- Background music  -->
+  <audio id="bg-music" loop preload="auto" autoplay>
+    <source src="assets/music.mp3" type="audio/mpeg" />
+  </audio>
+
+  <!-- Button click sound effect -->
+  <audio id="sfx-click" preload="auto">
+    <source src="assets/click.mp3" type="audio/mpeg" />
+  </audio>
+
+  <!-- Floating decorative layer -->
+  <div class="float-layer" aria-hidden="true"></div>
+
+  <!-- Small hint if autoplay is blocked -->
+  <div class="toast" id="autoplay-hint" data-i18n="tapEnableAudio" hidden>Tap anywhere to enable music</div>
+
+  <header class="site-header">
+    <img
+      src="assets/logo.png"
+      alt="Logic Lab Logo"
+      class="logo"
+    />
+  </header>
+
+  <main class="content">
+    <nav class="menu" aria-label="Main">
+      <button class="menu-card" id="btn-play" data-i18n="play" ></button>
+      <button class="menu-card" id="btn-learn" data-i18n="learn" onclick="window.location.href='learn.html'"></button>
+      <button class="menu-card" id="btn-sandbox" data-i18n="sandbox" onclick="window.location.href='sandbox.html'"></button>
+    </nav>
+  </main>
+
+  <!-- Floating Settings Button -->
+  <button class="fab-settings" id="open-settings" aria-label="Open settings" title="Settings">
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M12 8.5A3.5 3.5 0 1 1 8.5 12 3.5 3.5 0 0 1 12 8.5m0-2a1 1 0 0 1 .93.63l.46 1.12a7.9 7.9 0 0 1 1.72.71l1.15-.45a1 1 0 0 1 1.19.45l1 1.73a1 1 0 0 1-.26 1.28l-.95.73a7.8 7.8 0 0 1 0 1.96l.95.73a1 1 0 0 1 .26 1.28l-1 1.73a1 1 0 0 1-1.19.45l-1.15-.45a7.9 7.9 0 0 1-1.72.71l-.46 1.12A1 1 0 0 1 12 21.5h-2a1 1 0 0 1-.93-.63l-.46-1.12a7.9 7.9 0 0 1-1.72-.71l-1.15.45a1 1 0 0 1-1.19-.45l-1-1.73a1 1 0 0 1 .26-1.28l.95-.73a7.8 7.8 0 0 1 0-1.96l-.95-.73a1 1 0 0 1-.26-1.28l1-1.73a1 1 0 0 1 1.19-.45l1.15.45a7.9 7.9 0 0 1 1.72-.71l.46-1.12A1 1 0 0 1 10 6.5z"/>
+    </svg>
+  </button>
+
+  <!-- Settings Modal -->
+  <div class="modal" id="settings-modal" role="dialog" aria-modal="true" aria-labelledby="settings-title" aria-hidden="true">
+    <div class="modal-backdrop" id="close-settings"></div>
+    <div class="modal-panel" role="document">
+      <header class="modal-header">
+        <h2 id="settings-title" data-i18n="settings">Settings</h2>
+        <button class="icon-btn" id="x-close" aria-label="Close">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M18.3 5.7a1 1 0 0 0-1.4 0L12 10.6 7.1 5.7A1 1 0 1 0 5.7 7.1L10.6 12l-4.9 4.9a1 1 0 1 0 1.4 1.4L12 13.4l4.9 4.9a1 1 0 0 0 1.4-1.4L13.4 12l4.9-4.9a1 1 0 0 0 0-1.4z"/>
+          </svg>
+        </button>
+      </header>
+
+      <div class="modal-body">
+        <!-- Font Size -->
+        <section class="setting">
+          <label for="font-size" class="setting-label" data-i18n="fontSize">Font size</label>
+          <input type="range" id="font-size" min="90" max="130" step="5" />
+          <div class="hint" data-i18n="fontSizeHint">Adjust overall text size.</div>
+        </section>
+
+        <!-- Theme -->
+        <section class="setting">
+          <span class="setting-label" data-i18n="theme">Theme</span>
+          <div class="radio-row">
+            <label><input type="radio" name="theme" value="light" checked> <span data-i18n="themeLight">Light</span></label>
+            <label><input type="radio" name="theme" value="dark"> <span data-i18n="themeDark">Dark</span></label>
+            <label><input type="radio" name="theme" value="cb"> <span data-i18n="themeCB">Color-blind</span></label>
+          </div>
+          <div class="hint" data-i18n="themeHint">High-contrast palette for color-blind accessibility.</div>
+        </section>
+
+        <!-- Language -->
+        <section class="setting">
+          <label for="language" class="setting-label" data-i18n="language">Language</label>
+          <select id="language">
+            <option value="en">English</option>
+            <option value="fr">Français</option>
+            <option value="es">Español</option>
+            <option value="ar">العربية</option>
+          </select>
+        </section>
+
+        <!-- Music -->
+        <section class="setting">
+          <div class="setting-row">
+            <span class="setting-label" data-i18n="music">Music</span>
+            <button class="pill" id="toggle-music" aria-pressed="true" data-i18n="musicPause">Pause</button>
+          </div>
+          <label for="volume" class="sr-only" data-i18n="volume">Volume</label>
+          <input type="range" id="volume" min="0" max="1" step="0.01" />
+          <div class="hint" data-i18n="volumeHint">Use the button to play/pause. Volume saves automatically.</div>
+        </section>
+
+        <!-- SFX -->
+        <section class="setting">
+          <label for="sfx-volume" class="setting-label" data-i18n="sfx">Sound effects</label>
+          <input type="range" id="sfx-volume" min="0" max="1" step="0.01" />
+          <div class="hint" data-i18n="sfxHint">Controls button click sound volume.</div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

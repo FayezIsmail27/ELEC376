@@ -1,0 +1,17 @@
+In this task you will be creating a simple substitution cipher program.
+This is quite an old method of sending secret messages (not very secure) but fun to implement!
+
+The idea is that each letter of the alphabet gets replaced by another letter. 
+For instance, every “b” gets replaced by “Z”. 
+
+-	Write a program that ask the user to input a secret message
+-	Encrypt the message using the substitution cipher
+-	Decrypt the message back to its original form
+
+For example, to encrypt, replace character at position n of the alphabet 
+with character at position n in the key. 
+You are given the alphabet and key in the starter code.      
+
+added 1 line
+added line 2
+

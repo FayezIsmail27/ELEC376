@@ -1,0 +1,440 @@
+<!doctype html>
+<html lang="en" data-theme="default">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Digital Circuits — Main Menu</title>
+  <style>
+    /* ----------------------
+       CSS RESET & VARIABLES
+       ---------------------- */
+    :root {
+      --base-font-size: 16px; /* user-adjustable */
+      --radius: 16px;
+      --shadow: 0 10px 25px rgba(0,0,0,.15);
+
+      /* Default (Light) Theme */
+      --bg: #fff;
+      --bg-accent: #e9f0ff;
+      --panel: #ffffff;
+      --text: #0e1420;
+      --muted: #5c6b85;
+      --primary: #1f6bff;
+      --primary-contrast: #ffffff;
+      --accent: #22c55e; /* green */
+      --focus: #ffb703; /* amber */
+      --border: #d8e0ee;
+      --button-hover: #1957cc;
+      --menu-gradient: linear-gradient(135deg, #ffffff 0%, #ecf2ff 100%);
+    }
+
+    /* DARK THEME */
+    html[data-theme="dark"] {
+      --bg: #0c1220;
+      --bg-accent: #10182b;
+      --panel: #111a2e;
+      --text: #f1f5f9;
+      --muted: #97a3b6;
+      --primary: #7aa2ff;
+      --primary-contrast: #0c1220;
+      --accent: #22e3a1;
+      --focus: #ffd166;
+      --border: #1f2a44;
+      --button-hover: #5b83ff;
+      --menu-gradient: linear-gradient(135deg, #0c1220 0%, #121a31 100%);
+    }
+
+    /* COLOR-BLIND FRIENDLY THEME (High Contrast, Blue/Orange) */
+    html[data-theme="cb"] {
+      --bg: #ffffff;
+      --bg-accent: #f6f7f9;
+      --panel: #ffffff;
+      --text: #0d0d0d;
+      --muted: #3f3f46;
+      --primary: #005bbb; /* deep blue */
+      --primary-contrast: #ffffff;
+      --accent: #ff7f2a; /* orange */
+      --focus: #9b2226; /* dark red focus ring for visibility */
+      --border: #bdbdbd;
+      --button-hover: #004a95;
+      --menu-gradient: linear-gradient(135deg, #ffffff 0%, #eaf3ff 100%);
+    }
+
+    html { font-size: var(--base-font-size); }
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100svh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      line-height: 1.4;
+      display: grid;
+      place-items: center;
+    }
+
+    /* -------------
+       LAYOUT
+       ------------- */
+    .wrap {
+      width: min(100% - 2rem, 980px);
+      display: grid;
+      gap: 1.25rem;
+    }
+
+    header.hero {
+      border-radius: var(--radius);
+      background: var(--menu-gradient);
+      box-shadow: var(--shadow);
+      padding: clamp(1.25rem, 3vw, 2rem);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: .9rem;
+    }
+    .chip {
+      display: inline-grid;
+      place-items: center;
+      width: 3rem; height: 3rem;
+      border-radius: 12px;
+      background: var(--primary);
+      color: var(--primary-contrast);
+      box-shadow: 0 6px 18px rgba(0,0,0,.18);
+    }
+    .brand h1 { 
+      font-size: clamp(1.25rem, 3vw, 1.75rem);
+      margin: 0;
+      letter-spacing: .3px;
+    }
+    .tagline { color: var(--muted); margin-top: .25rem; }
+
+    main.menu {
+      display: grid;
+      gap: 1rem;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    @media (max-width: 720px) {
+      main.menu { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 1rem;
+      display: grid;
+      gap: .75rem;
+      transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+    }
+    .card:hover, .card:focus-within {
+      transform: translateY(-3px);
+      box-shadow: 0 14px 35px rgba(0,0,0,.18);
+      border-color: var(--primary);
+    }
+
+    .card h2 { 
+      font-size: 1.15rem; 
+      margin: 0; 
+      display: flex; align-items: center; gap: .5rem;
+    }
+    .card p { margin: 0; color: var(--muted); }
+
+    .actions { margin-top: .5rem; }
+    .btn {
+      -webkit-tap-highlight-color: transparent;
+      appearance: none;
+      border: none;
+      background: var(--primary);
+      color: var(--primary-contrast);
+      padding: .8rem 1rem;
+      border-radius: 12px;
+      font-weight: 700;
+      letter-spacing: .25px;
+      cursor: pointer;
+      box-shadow: 0 8px 18px rgba(31,107,255,.25);
+      transition: background .15s ease, transform .1s ease;
+    }
+    .btn:hover { background: var(--button-hover); }
+    .btn:active { transform: translateY(1px); }
+
+    .meta {
+      display: flex; gap: .5rem; align-items: center;
+      color: var(--muted); font-size: .95rem;
+    }
+    .meta .dot { width: .5rem; height: .5rem; border-radius: 999px; background: var(--accent); }
+
+    /* -------------
+       SETTINGS (FAB + PANEL)
+       ------------- */
+    .fab {
+      position: fixed; right: 1.25rem; bottom: 1.25rem;
+      width: 3.25rem; height: 3.25rem;
+      border-radius: 999px;
+      background: var(--primary);
+      color: var(--primary-contrast);
+      display: grid; place-items: center;
+      border: none; cursor: pointer;
+      box-shadow: var(--shadow);
+    }
+    .fab:focus { outline: 3px solid var(--focus); outline-offset: 2px; }
+
+    .settings-panel {
+      position: fixed; inset: 0; display: none;
+      align-items: flex-end; justify-content: center;
+      background: color-mix(in oklab, #000 40%, transparent);
+    }
+    .settings-panel[open] { display: grid; }
+
+    .sheet {
+      width: min(100% - 2rem, 560px);
+      background: var(--panel);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 16px 16px 12px 12px;
+      box-shadow: 0 24px 50px rgba(0,0,0,.35);
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+    .sheet header { display:flex; align-items:center; justify-content: space-between; }
+    .sheet h3 { margin: .25rem 0 0; }
+    .sheet .close { appearance: none; border: none; background: transparent; color: var(--text); cursor:pointer; font-size: 1.1rem; }
+
+    .field { margin: .9rem 0; }
+    .field label { display:block; font-weight:700; margin-bottom:.35rem; }
+    .choices { display:flex; gap:.5rem; flex-wrap:wrap; }
+    .choice {
+      border:1px solid var(--border);
+      border-radius: 10px; padding:.5rem .75rem; cursor:pointer;
+      background: var(--bg-accent);
+    }
+    .choice[aria-checked="true"] { border-color: var(--primary); box-shadow: inset 0 0 0 2px var(--primary); }
+
+    .slider-row { display:grid; grid-template-columns: 1fr auto; gap:.75rem; align-items:center; }
+    input[type="range"] { width:100%; }
+
+    .sheet footer { margin-top: 1rem; display:flex; gap:.5rem; justify-content:flex-end; }
+    .btn-secondary { background: var(--bg-accent); color: var(--text); box-shadow:none; border:1px solid var(--border); }
+
+    /* Focus styles for accessibility */
+    :is(button, a, input, [role="radio"]) :focus,
+    :is(button, a, input, [role="radio"]) :focus-visible,
+    .btn:focus { outline: 3px solid var(--focus); outline-offset: 2px; }
+  </style>
+</head>
+<body>
+  <div class="wrap" role="application" aria-label="Digital Circuits Main Menu">
+    <header class="hero" aria-labelledby="appTitle">
+      <div class="brand">
+        <div class="chip" aria-hidden="true">
+          <!-- Simple logic gate icon -->
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M3 12h6c4 0 6 3 6 6V6c0 3-2 6-6 6H3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="20" cy="12" r="2" fill="currentColor"/>
+          </svg>
+        </div>
+        <div>
+          <h1 id="appTitle">Digital Circuits Lab</h1>
+          <div class="tagline">Learn gates, truth tables, and build circuits — playfully.</div>
+        </div>
+      </div>
+    </header>
+
+    <main class="menu" aria-label="Main options">
+      <!-- PLAY -->
+      <section class="card" tabindex="0" aria-labelledby="playTitle">
+        <h2 id="playTitle">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M8 5l11 7-11 7V5z" fill="currentColor"/>
+          </svg>
+          Play
+        </h2>
+        <p>Start the challenge mode with levels on logic gates, timing, and combinational puzzles.</p>
+        <div class="meta"><span class="dot"></span>Great for quick sessions</div>
+        <div class="actions">
+          <button class="btn" data-route="play">Start Playing</button>
+        </div>
+      </section>
+
+      <!-- LEARN -->
+      <section class="card" tabindex="0" aria-labelledby="learnTitle">
+        <h2 id="learnTitle">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M4 5h16v12a3 3 0 01-3 3H7a3 3 0 01-3-3V5z" stroke="currentColor" stroke-width="2"/>
+            <path d="M8 9h8M8 13h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          Learn
+        </h2>
+        <p>Interactive lessons on AND/OR/NOT, NAND/NOR, XOR/XNOR, truth tables, and more.</p>
+        <div class="meta"><span class="dot"></span>Step‑by‑step tutorials</div>
+        <div class="actions">
+          <button class="btn" data-route="learn">Go to Lessons</button>
+        </div>
+      </section>
+
+      <!-- SANDBOX -->
+      <section class="card" tabindex="0" aria-labelledby="sandboxTitle">
+        <h2 id="sandboxTitle">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M4 20V7a2 2 0 012-2h12a2 2 0 012 2v13" stroke="currentColor" stroke-width="2"/>
+            <path d="M3 20h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="8" cy="11" r="1.5" fill="currentColor"/>
+            <circle cx="12" cy="11" r="1.5" fill="currentColor"/>
+            <circle cx="16" cy="11" r="1.5" fill="currentColor"/>
+          </svg>
+          Sandbox
+        </h2>
+        <p>Free‑build circuits with draggable components and live simulation (coming next).</p>
+        <div class="meta"><span class="dot"></span>Creative mode</div>
+        <div class="actions">
+          <button class="btn" data-route="sandbox">Open Sandbox</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Settings Floating Action Button -->
+  <button class="fab" id="openSettings" aria-label="Open settings">
+    <!-- gear icon -->
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M12 15.5a3.5 3.5 0 100-7 3.5 3.5 0 000 7z" stroke="currentColor" stroke-width="2"/>
+      <path d="M19.4 13.5a7.96 7.96 0 000-3l2.1-1.2-2-3.4-2.4.7a8.03 8.03 0 00-2.6-1.5L14 1h-4l-.5 3.1a8.03 8.03 0 00-2.6 1.5l-2.4-.7-2 3.4L4.6 10.5a7.96 7.96 0 000 3L2.5 14.7l2 3.4 2.4-.7c.77.62 1.66 1.14 2.6 1.5L10 23h4l.5-3.1c.94-.36 1.83-.88 2.6-1.5l2.4.7 2-3.4-2.1-1.2z" stroke="currentColor" stroke-width="2"/>
+    </svg>
+  </button>
+
+  <!-- Settings Panel -->
+  <div class="settings-panel" id="settingsPanel" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+    <div class="sheet">
+      <header>
+        <div>
+          <h3 id="settingsTitle">Settings</h3>
+          <div class="tagline" id="settingsDesc">Personalize text size and theme.</div>
+        </div>
+        <button class="close" id="closeSettings" aria-label="Close settings">✕</button>
+      </header>
+
+      <div class="field" role="radiogroup" aria-labelledby="themeLabel">
+        <label id="themeLabel">Theme</label>
+        <div class="choices">
+          <button class="choice" role="radio" aria-checked="true" data-theme-choice="default">Default</button>
+          <button class="choice" role="radio" aria-checked="false" data-theme-choice="dark">Dark</button>
+          <button class="choice" role="radio" aria-checked="false" data-theme-choice="cb">Color‑blind friendly</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="textSize">Text size</label>
+        <div class="slider-row">
+          <input type="range" id="textSize" min="14" max="22" step="1" value="16" aria-describedby="textSizeHelp" />
+          <output id="textSizeValue" for="textSize">100%</output>
+        </div>
+        <div class="tagline" id="textSizeHelp">Adjusts overall UI text size.</div>
+      </div>
+
+      <footer>
+        <button class="btn btn-secondary" id="resetPrefs">Reset</button>
+        <button class="btn" id="savePrefs">Save</button>
+      </footer>
+    </div>
+  </div>
+
+  <script>
+
+
+    // ----------------------
+    const PREF_KEY = 'dc_menu_prefs_v1';
+    const $ = sel => document.querySelector(sel);
+    const $$ = sel => Array.from(document.querySelectorAll(sel));
+
+    const defaultPrefs = () => ({ theme: 'default', baseFontPx: 16 });
+
+    function loadPrefs(){
+      try { return JSON.parse(localStorage.getItem(PREF_KEY)) || defaultPrefs(); }
+      catch { return defaultPrefs(); }
+    }
+    function savePrefs(p){ localStorage.setItem(PREF_KEY, JSON.stringify(p)); }
+
+    function applyPrefs(p){
+      document.documentElement.setAttribute('data-theme', p.theme);
+      document.documentElement.style.setProperty('--base-font-size', p.baseFontPx + 'px');
+      // Reflect in UI
+      $$('#settingsPanel .choice[role="radio"]').forEach(btn => {
+        const on = btn.dataset.themeChoice === p.theme;
+        btn.setAttribute('aria-checked', on ? 'true':'false');
+      });
+      const slider = $('#textSize');
+      if (slider) {
+        slider.value = p.baseFontPx;
+        updateTextSizeLabel(slider.value);
+      }
+    }
+
+    function updateTextSizeLabel(px){
+      const pct = Math.round((px/16)*100);
+      $('#textSizeValue').textContent = pct + '%';
+    }
+
+    // ----------------------
+    // Settings Panel Logic
+    // ----------------------
+    const settingsPanel = $('#settingsPanel');
+    const openBtn = $('#openSettings');
+    const closeBtn = $('#closeSettings');
+    const saveBtn = $('#savePrefs');
+    const resetBtn = $('#resetPrefs');
+
+    let workingPrefs = loadPrefs();
+    applyPrefs(workingPrefs);
+
+    function openSettings(){ settingsPanel.setAttribute('open',''); openBtn.setAttribute('aria-expanded','true'); $('#textSize').focus(); }
+    function closeSettings(){ settingsPanel.removeAttribute('open'); openBtn.setAttribute('aria-expanded','false'); openBtn.focus(); }
+
+    openBtn.addEventListener('click', openSettings);
+    closeBtn.addEventListener('click', closeSettings);
+    settingsPanel.addEventListener('click', (e)=>{ if(e.target === settingsPanel) closeSettings(); });
+    document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape' && settingsPanel.hasAttribute('open')) closeSettings(); });
+
+    // Theme radio buttons
+    $$('#settingsPanel .choice[role="radio"]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        $$('#settingsPanel .choice[role="radio"]').forEach(b=>b.setAttribute('aria-checked','false'));
+        btn.setAttribute('aria-checked','true');
+        workingPrefs.theme = btn.dataset.themeChoice;
+        applyPrefs(workingPrefs);
+      });
+    });
+
+    // Text size slider
+    const textSlider = $('#textSize');
+    textSlider.addEventListener('input', (e)=>{
+      workingPrefs.baseFontPx = parseInt(e.target.value,10);
+      updateTextSizeLabel(workingPrefs.baseFontPx);
+      applyPrefs(workingPrefs);
+    });
+
+    // Save & Reset
+    saveBtn.addEventListener('click', ()=>{ savePrefs(workingPrefs); closeSettings(); });
+    resetBtn.addEventListener('click', ()=>{
+      workingPrefs = defaultPrefs();
+      applyPrefs(workingPrefs);
+      savePrefs(workingPrefs);
+    });
+
+    // ----------------------
+    // Menu Buttons (stub navigation)
+    // ----------------------
+    $$('button[data-route]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const route = btn.dataset.route;
+        // In the next step, replace alert with real navigation
+        alert('Navigate to: ' + route.toUpperCase());
+      });
+    });
+  </script>
+</body>
+</html>
