@@ -1,0 +1,102 @@
+/* Existing sections from before remain the same. Add/replace the parts below. */
+
+.levels-header {
+  display: grid;
+  grid-template-columns: 56px 1fr 56px;
+  align-items: center;
+  gap: 8px;
+}
+
+.back-btn {
+  width: 44px;
+  height: 44px;
+  margin-left: 8px;
+  border: none;
+  border-radius: 12px;
+  background: var(--card);
+  color: var(--text);
+  display: grid;
+  place-items: center;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+}
+.back-btn svg { width: 24px; height: 24px; fill: currentColor; }
+
+.levels {
+  width: min(820px, 92vw);
+  display: grid;
+  gap: 18px;
+}
+
+.levels-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 14px;
+}
+@media (max-width: 720px) { .levels-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 460px) { .levels-grid { grid-template-columns: repeat(2, 1fr); } }
+
+.level-card {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1 / 1;
+  border-radius: var(--radius);
+  background: var(--card);
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 900;
+  font-size: 1.8rem;
+  border: 3px solid var(--primary);
+  box-shadow: var(--shadow);
+  transition: transform .12s ease, box-shadow .2s ease, background .2s ease, filter .2s ease, opacity .2s ease;
+  user-select: none;
+}
+.level-card:hover { transform: translateY(-2px); box-shadow: 0 12px 26px rgba(0,0,0,0.12); }
+.level-card:active { transform: translateY(0); }
+
+.level-card.locked {
+  filter: grayscale(1) brightness(0.85);
+  opacity: 0.7;
+  border-color: var(--muted);
+}
+
+/* Fade layer + lock icon */
+.level-card.locked::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.15), rgba(0,0,0,0.35));
+  pointer-events: none;
+}
+.level-card.locked::after {
+  /* simple lock icon as inline SVG path via mask */
+  content: "";
+  position: absolute;
+  width: 34%;
+  aspect-ratio: 1 / 1;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -58%);
+  background: currentColor;
+  color: var(--muted);
+  -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="%23000" d="M18 8h-1V6a5 5 0 1 0-10 0v2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2m-9-2a3 3 0 0 1 6 0v2H9z"/></svg>') center / contain no-repeat;
+          mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="%23000" d="M18 8h-1V6a5 5 0 1 0-10 0v2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2m-9-2a3 3 0 0 1 6 0v2H9z"/></svg>') center / contain no-repeat;
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+.level-card span { display: inline-block; transform: translateY(-2px); }
+
+.coming-soon { text-align: center; color: var(--muted); font-weight: 700; }
+
+/* tiny shake for trying to click locked */
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-3px); }
+  50% { transform: translateX(3px); }
+  75% { transform: translateX(-2px); }
+  100% { transform: translateX(0); }
+}
+.level-card.shake { animation: shake .25s ease; }

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Level 4 — Logic Lab</title>
+  <link rel="icon" type="image/x-icon" href="../assets/logo.png" />
+  <link rel="stylesheet" href="../styles.css" />
+  <style>
+    /* Page-specific minimal styles */
+    .level-wrap {
+      width: min(820px, 92vw);
+      display: grid;
+      gap: 18px;
+      margin-inline: auto;
+      padding-block: 16px;
+    }
+    .level-header {
+      display: flex; align-items: center; gap: 12px;
+    }
+    .lvl-badge {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 44px; height: 44px; border-radius: 12px;
+      background: var(--card); color: var(--text); font-weight: 900; box-shadow: var(--shadow);
+    }
+    .level-card-box {
+      background: var(--card);
+      border: 2px solid var(--primary);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px;
+    }
+    .btn-row {
+      display: flex; gap: 12px; flex-wrap: wrap;
+    }
+    .btn {
+      border: none; border-radius: 12px; padding: 10px 16px; font-weight: 700;
+      background: var(--primary); color: white; cursor: pointer; box-shadow: var(--shadow);
+      transition: transform .12s ease, box-shadow .2s ease, opacity .2s ease;
+    }
+    .btn:active { transform: translateY(1px); }
+    .btn.secondary { background: var(--card); color: var(--text); border: 2px solid var(--primary); }
+  </style>
+</head>
+<body>
+  <!-- Reuse same IDs so your settings/music work -->
+  <audio id="bg-music" autoplay playsinline loop preload="auto">
+    <source src="../assets/music.mp3" type="audio/mpeg" />
+  </audio>
+  <audio id="sfx-click" preload="auto">
+    <source src="../assets/click.mp3" type="audio/mpeg" />
+  </audio>
+
+  <div class="float-layer" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <button class="back-btn" id="btn-back" aria-label="Back to Levels" title="Back">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+      </svg>
+    </button>
+    <img src="../assets/logo.png" alt="Logic Lab Logo" class="logo" />
+  </header>
+
+  <main class="content">
+    <section class="level-wrap">
+      <div class="level-header">
+        <div class="lvl-badge" id="lvl-badge">1</div>
+        <h1 id="lvl-title">Level 1</h1>
+      </div>
+
+      <div class="level-card-box">
+        <p>
+          Do the task(s) for this level, then click “Complete Level”.
+        </p>
+        <div class="btn-row">
+          <button class="btn" id="btn-complete">Complete Level</button>
+          <button class="btn secondary" id="btn-menu">Back to Levels</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Settings trigger + modal so user can adjust things on any page -->
+  <button class="fab-settings" id="open-settings" aria-label="Open settings" title="Settings">
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M12 8.5A3.5 3.5 0 1 1 8.5 12 3.5 3.5 0 0 1 12 8.5m0-2a1 1 0 0 1 .93.63l.46 1.12a7.9 7.9 0 0 1 1.72.71l1.15-.45a1 1 0 0 1 1.19.45l1 1.73a1 1 0 0 1-.26 1.28l-.95.73a7.8 7.8 0 0 1 0 1.96l.95.73a1 1 0 0 1 .26 1.28l-1 1.73a1 1 0 0 1-1.19.45l-1.15-.45a7.9 7.9 0 0 1-1.72.71l-.46 1.12A1 1 0 0 1 12 21.5h-2a1 1 0 0 1-.93-.63l-.46-1.12a7.9 7.9 0 0 1-1.72-.71l-1.15.45a1 1 0 0 1-1.19-.45l-1-1.73a1 1 0 0 1 .26-1.28l.95-.73a7.8 7.8 0 0 1 0-1.96l-.95-.73a1 1 0 0 1-.26-1.28l1-1.73a1 1 0 0 1 1.19-.45l1.15.45a7.9 7.9 0 0 1 1.72-.71l.46-1.12A1 1 0 0 1 10 6.5z"/>
+    </svg>
+  </button>
+
+  <div class="modal" id="settings-modal" role="dialog" aria-modal="true" aria-labelledby="settings-title" aria-hidden="true">
+    <div class="modal-backdrop" id="close-settings"></div>
+    <div class="modal-panel" role="document">
+      <header class="modal-header">
+        <h2 id="settings-title" data-i18n="settings">Settings</h2>
+        <button class="icon-btn" id="x-close" aria-label="Close">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M18.3 5.7a1 1 0 0 0-1.4 0L12 10.6 7.1 5.7A1 1 0 1 0 5.7 7.1L10.6 12l-4.9 4.9a1 1 0 1 0 1.4 1.4L12 13.4l4.9 4.9a1 1 0 0 0 1.4-1.4L13.4 12l4.9-4.9a1 1 0 0 0 0-1.4z"/>
+          </svg>
+        </button>
+      </header>
+
+      <div class="modal-body">
+        <section class="setting">
+          <label for="font-size" class="setting-label" data-i18n="fontSize">Font size</label>
+          <input type="range" id="font-size" min="90" max="130" step="5" />
+          <div class="hint" data-i18n="fontSizeHint">Adjust overall text size.</div>
+        </section>
+
+        <section class="setting">
+          <span class="setting-label" data-i18n="theme">Theme</span>
+          <div class="radio-row">
+            <label><input type="radio" name="theme" value="light"> <span data-i18n="themeLight">Light</span></label>
+            <label><input type="radio" name="theme" value="dark"> <span data-i18n="themeDark">Dark</span></label>
+            <label><input type="radio" name="theme" value="cb"> <span data-i18n="themeCB">Color-blind</span></label>
+          </div>
+          <div class="hint" data-i18n="themeHint">High-contrast palette for color-blind accessibility.</div>
+        </section>
+
+        <section class="setting">
+          <label for="language" class="setting-label" data-i18n="language">Language</label>
+          <select id="language">
+            <option value="en">English</option>
+            <option value="fr">Français</option>
+            <option value="es">Español</option>
+            <option value="ar">العربية</option>
+          </select>
+        </section>
+
+        <section class="setting">
+          <div class="setting-row">
+            <span class="setting-label" data-i18n="music">Music</span>
+            <button class="pill" id="toggle-music" aria-pressed="true" data-i18n="musicPause">Pause</button>
+          </div>
+          <label for="volume" class="sr-only" data-i18n="volume">Volume</label>
+          <input type="range" id="volume" min="0" max="1" step="0.01" />
+        </section>
+
+        <section class="setting">
+          <label for="sfx-volume" class="setting-label" data-i18n="sfx">Sound effects</label>
+          <input type="range" id="sfx-volume" min="0" max="1" step="0.01" />
+          <div class="hint" data-i18n="sfxHint">Controls button click sound volume.</div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reuse your global logic for theme/music/i18n -->
+  <script src="../script.js"></script>
+  <script>
+    // --------- Progress + Navigation for Levels ----------
+    const PROGRESS_KEY = 'll_unlocked'; // highest unlocked level (1..10)
+    const CURRENT_LEVEL = 4;         
+    const MAX_LEVEL = 10;
+
+    function getUnlocked() {
+      const v = parseInt(localStorage.getItem(PROGRESS_KEY) || '1', 10);
+      return Math.min(Math.max(v || 1, 1), MAX_LEVEL);
+    }
+    function setUnlocked(n) {
+      const clamped = Math.min(Math.max(n, 1), MAX_LEVEL);
+      localStorage.setItem(PROGRESS_KEY, String(clamped));
+    }
+
+    function goToMenu() {
+      window.location.href = '../mainlevel.html';
+    }
+    function goToLevel(n) {
+      const next = Math.min(Math.max(n, 1), MAX_LEVEL);
+      window.location.href = `./${next}.html`;
+    }
+
+    // Wire buttons
+    document.getElementById('btn-back').addEventListener('click', () => {
+      const sfx = document.getElementById('sfx-click');
+      if (sfx) { try { sfx.currentTime = 0; sfx.play(); } catch(_){} }
+      goToMenu();
+    });
+
+    document.getElementById('btn-menu').addEventListener('click', () => {
+      const sfx = document.getElementById('sfx-click');
+      if (sfx) { try { sfx.currentTime = 0; sfx.play(); } catch(_){} }
+      goToMenu();
+    });
+
+    document.getElementById('btn-complete').addEventListener('click', () => {
+      const sfx = document.getElementById('sfx-click');
+      if (sfx) { try { sfx.currentTime = 0; sfx.play(); } catch(_){} }
+
+      // Unlock next if needed
+      const unlocked = getUnlocked();
+      const next = CURRENT_LEVEL + 1;
+      if (next <= MAX_LEVEL && unlocked < next) {
+        setUnlocked(next);
+      }
+
+      // Go to next if exists, else go to menu
+      if (CURRENT_LEVEL < MAX_LEVEL) {
+        goToLevel(next);
+      } else {
+        goToMenu();
+      }
+    });
+
+    document.getElementById('lvl-badge').textContent = String(CURRENT_LEVEL);
+    document.getElementById('lvl-title').textContent = `Level ${CURRENT_LEVEL}`;
+  </script>
+</body>
+</html>
